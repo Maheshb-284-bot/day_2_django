@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, #a78bfa, #818cf8, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 28px;
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .stats span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stats .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot.total { background: #818cf8; }
+        .dot.done  { background: #34d399; }
+        .dot.pend  { background: #fbbf24; }
+
+        /* Add Task Form */
+        .add-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .add-form input[type="text"] {
+            flex: 1;
+            padding: 14px 18px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            color: #f3f4f6;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .add-form input[type="text"]::placeholder {
+            color: #6b7280;
+        }
+
+        .add-form input[type="text"]:focus {
+            border-color: #818cf8;
+            box-shadow: 0 0 0 3px rgba(129,140,248,0.15);
+        }
+
+        .add-form button {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #818cf8, #6366f1);
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .add-form button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99,102,241,0.35);
+        }
+
+        .add-form button:active {
+            transform: translateY(0);
+        }
+
+        /* Task List */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 18px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .task-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .task-item.completed {
+            opacity: 0.55;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: #6b7280;
+        }
+
+        .task-title {
+            flex: 1;
+            font-size: 0.95rem;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .task-date {
+            font-size: 0.75rem;
+            color: #6b7280;
+            white-space: nowrap;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 7px 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.12s, box-shadow 0.2s;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-toggle {
+            background: rgba(52,211,153,0.15);
+            color: #34d399;
+        }
+
+        .btn-toggle.undo {
+            background: rgba(251,191,36,0.15);
+            color: #fbbf24;
+        }
+
+        .btn-delete {
+            background: rgba(239,68,68,0.12);
+            color: #f87171;
+        }
+
+        .btn-delete:hover {
+            box-shadow: 0 4px 12px rgba(239,68,68,0.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #6b7280;
+            font-size: 1rem;
+        }
+
+        .empty-state .icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Task Tracker</h1>
+        <div class="stats">
+            <span><span class="dot total"></span> Total: {{ total }}</span>
+            <span><span class="dot done"></span> Done: {{ completed }}</span>
+            <span><span class="dot pend"></span> Pending: {{ pending }}</span>
+        </div>
+
+        <form method="POST" class="add-form">
+            {% csrf_token %}
+            <input type="text" name="title" placeholder="What needs to be done?" required autofocus>
+            <button type="submit">Add Task</button>
+        </form>
+
+        <div class="task-list">
+            {% for task in tasks %}
+            <div class="task-item {% if task.completed %}completed{% endif %}">
+                <span class="task-title">{{ task.title }}</span>
+                <span class="task-date">{{ task.created_at|date:"M d, H:i" }}</span>
+                <a href="{% url 'task_complete' task.id %}"
+                   class="btn btn-toggle {% if task.completed %}undo{% endif %}">
+                    {% if task.completed %}Undo{% else %}Done{% endif %}
+                </a>
+                <a href="{% url 'task_delete' task.id %}" class="btn btn-delete">Delete</a>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div class="icon">✨</div>
+                <p>No tasks yet. Add one above!</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
